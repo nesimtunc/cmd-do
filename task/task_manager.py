@@ -1,6 +1,8 @@
 import os
 
-class Task:
+from .task import Task
+
+class TaskManager:
     
     def __init__(self, filename):
         self._filename = filename
@@ -14,17 +16,25 @@ class Task:
         last_id = self._get_last_id()
         new_id = last_id + 1
         with open(self._filename, "a") as f:
-            f.write(f"{new_id},\"{title}\",0") # 0 means incomplete
+            f.write(f"{new_id},\"{title}\",0\n") # 0 means incomplete
 
     def list(self):
+        tasks = []
         with open(self._filename) as f:
             for line in f.readlines():
-                task_id, title, completed = line.split(',')
+                id, title, status = line.split(',')
+                tasks.append(Task(id, title, status))
+
+        return tasks
+    
+    def list_print(self):
+        tasks = self.list()
+        for task in tasks:
                 task_status = "[ ]"
-                if completed == "1":
+                if task.status == "1":
                     task_status = "[✅]"
                 
-                print(f"{task_status} - {task_id} - {title}")
+                print(f"{task_status} - {task.id} - {task.title}")
 
     def complete(self, task_id):
         pass
