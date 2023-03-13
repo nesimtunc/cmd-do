@@ -25,6 +25,17 @@ class TaskTests(unittest.TestCase):
             assert len(lines) == 1
             assert lines[0] == "1,\"test task\",0\n"
 
+    def test_can_get_last_id(self):
+        self.taskManager.create("test task")
+        self.taskManager.create("test task 2")
+
+        last_id = self.taskManager._get_last_id()
+        assert last_id == 2
+
+    def test_can_get_last_id_when_no_tasks(self):
+        last_id = self.taskManager._get_last_id()
+        assert last_id == 0
+
     def test_can_list_tasks(self):
         self.taskManager.create("test task")
         self.taskManager.create("test task 2")
