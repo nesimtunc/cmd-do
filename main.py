@@ -1,11 +1,12 @@
 import sys
-from task import TaskManager
+from task import TaskManager, TaskPresenter
 
 
 def main(filename="tasks.txt"):
     print(f"using {filename} as a db")
 
     tm = TaskManager()
+    tp = TaskPresenter()
 
     while True:
         print("1. Add task")
@@ -17,7 +18,7 @@ def main(filename="tasks.txt"):
         if choice == "1":
             create_task(tm)
         elif choice == "2":
-            tm.print()
+            tp.print()
         elif choice == "3":
             complete_task(tm)
         elif choice == "q":

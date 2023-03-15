@@ -34,19 +34,6 @@ class TaskManager:
                 tasks.append(Task(id, title, Status(int(status)))) 
         return tasks
 
-    def print(self):
-        """Print all tasks with their status and id."""
-        tasks = self.get_tasks()
-        if len(tasks) == 0:
-            print("No tasks")
-            return
-
-        for task in tasks:
-            task_status = "[ ]"
-            if task.status == Status.DONE:
-                task_status = "✅"
-            print(f"{task_status} - {task.id} - {task.title}")
-
     def complete(self, task_id):
         tasks = self.get_tasks()
         found = False
