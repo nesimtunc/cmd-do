@@ -3,7 +3,8 @@ import tempfile
 import os
 
 # Import Task and TaskManager from the task package
-from task import Task, TaskManager
+from task import TaskManager, Status
+
 
 class TaskTests(unittest.TestCase):
 
@@ -23,7 +24,8 @@ class TaskTests(unittest.TestCase):
         with open(self.filename) as f:
             lines = f.readlines()
             assert len(lines) == 1
-            assert lines[0] == "1,\"test task\",0\n"
+            assert lines[0] == f"1,\"test task\",{Status.TODO.value}\n"
+
 
     def test_can_get_last_id(self):
         self.taskManager.create("test task")
@@ -42,30 +44,23 @@ class TaskTests(unittest.TestCase):
 
         self.taskManager.complete(1)
 
-        tasks = self.taskManager.list()
+        tasks = self.taskManager.get_tasks()
         assert len(tasks) == 2
         assert tasks[0].id == 1
         assert tasks[0].title == "test task"
-        assert tasks[0].status == "1"
+        assert tasks[0].status == Status.DONE
 
     def test_can_list_tasks(self):
         self.taskManager.create("test task")
         self.taskManager.create("test task 2")
 
-        tasks = self.taskManager.list()
-        assert len(tasks) == 2
+        tasks = self.taskManager.get_tasks()
+        self.assertEqual(len(tasks), 2)
 
-        assert tasks[0].id == 1
-        assert tasks[0].title == "test task"
-        assert tasks[0].status == "0"
+        self.assertEqual(tasks[0].id, 1)
+        self.assertEqual(tasks[0].title, "test task")
+        self.assertEqual(tasks[0].status, Status.TODO)
 
-        assert tasks[1].id == 2
-        assert tasks[1].title == "test task 2"
-        assert tasks[1].status == "0"
-
-    def _create_test_file(self, filename):
-        self.temp_dir = tempfile.TemporaryDirectory()
-        self.temp_file = os.path.join(self.temp_dir.name, filename)
-
-        open(tempfile, "w").close()
-
+        self.assertEqual(tasks[1].id, 2)
+        self.assertEqual(tasks[1].title, "test task 2")
+        self.assertEqual(tasks[1].status, Status.TODO)
