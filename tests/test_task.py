@@ -8,7 +8,7 @@ from task import Task, TaskManager
 class TaskTests(unittest.TestCase):
 
     def setUp(self):
-        self.filename = tempfile.NamedTemporaryFile(delete=False).name
+        self.filename = tempfile.NamedTemporaryFile().name
         self.taskManager = TaskManager(self.filename)
 
     def tearDown(self):
@@ -17,7 +17,7 @@ class TaskTests(unittest.TestCase):
     def test_task_creates_file_if_not_exists(self):
         self.assertTrue(os.path.exists(self.filename))
 
-    def test_can_create_a_task(self):
+    def test_file_formatted_well(self):
         self.taskManager.create("test task")
 
         with open(self.filename) as f:
@@ -36,6 +36,18 @@ class TaskTests(unittest.TestCase):
         last_id = self.taskManager._get_last_id()
         assert last_id == 0
 
+    def test_can_complete_a_task(self):
+        self.taskManager.create("test task")
+        self.taskManager.create("test task 2")
+
+        self.taskManager.complete(1)
+
+        tasks = self.taskManager.list()
+        assert len(tasks) == 2
+        assert tasks[0].id == 1
+        assert tasks[0].title == "test task"
+        assert tasks[0].status == "1"
+
     def test_can_list_tasks(self):
         self.taskManager.create("test task")
         self.taskManager.create("test task 2")
@@ -43,13 +55,13 @@ class TaskTests(unittest.TestCase):
         tasks = self.taskManager.list()
         assert len(tasks) == 2
 
-        assert tasks[0].id == "1"
-        assert tasks[0].title == "\"test task\""
-        assert tasks[0].status == "0\n"
+        assert tasks[0].id == 1
+        assert tasks[0].title == "test task"
+        assert tasks[0].status == "0"
 
-        assert tasks[1].id == "2"
-        assert tasks[1].title == "\"test task 2\""
-        assert tasks[1].status == "0\n"
+        assert tasks[1].id == 2
+        assert tasks[1].title == "test task 2"
+        assert tasks[1].status == "0"
 
     def _create_test_file(self, filename):
         self.temp_dir = tempfile.TemporaryDirectory()

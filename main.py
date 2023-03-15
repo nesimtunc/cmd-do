@@ -1,19 +1,40 @@
 import sys
-
+from task import TaskManager
 
 def main(filename="tasks.txt"):
     print(f"using {filename} as a db")
 
-    print("1. Add task")
-    print("2. View tasks")
-    print("3. Quit")
+    tm = TaskManager()
 
-    choice = input("Enter your choice:")
-    if choice == "1":
-        with open(filename, "a") as f:
-            task = input("Enter a task:")
-            f.write(task + "\n")
+    while True:
+        print("1. Add task")
+        print("2. View tasks")
+        print("3. Complete task")
+        print("q. Quit")
 
+        choice = input("Enter your choice: ")
+        if choice == "1":            
+            create_task(tm)
+        elif choice == "2":
+            tm.print()            
+        elif choice == "3":
+            complete_task(tm)
+        elif choice == "q":
+            break
+
+def create_task(tm, msg="Enter a task: "):
+    title = input(msg)
+    tm.create(title)
+
+def complete_task(tm):
+    try:    
+        task_id = int(input("Enter task id: "))
+        if tm.complete(task_id) == None:
+            print("Task not found")
+        else:
+            print("Task completed 🎉")
+    except ValueError:
+        print("Invalid id")
 
 
 if __name__ == "__main__":
